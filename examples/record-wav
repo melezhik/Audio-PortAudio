@@ -1,9 +1,41 @@
 #!perl6
 
+use v6.c;
+
+=begin pod
+
+=head1 NAME
+
+record-wav - record data from some source to a WAV file
+
+=head1 SYNOPSIS
+
+=begin code
+
+record-wav [--source=<source name>] [--buffer=<256>] outfile
+
+=end code
+
+=head1 DESCRIPTION
+
+By default this will record audio from the default source (as
+determinied by PortAudio, and probably your computers microphone
+or line in,) to the specified .wav file as a 16 bit / 44100 WAV.
+
+The source can be specified by name which can be determined by
+the script C<enum-devices>, the source must have two input channels.
+
+Some sources (such as JACK,) may require a specific, fixed, buffer
+size in order to work in a consistent manner and this can be set
+with the C<buffer> option which is the size in "frames" of the buffer
+to be used by portaudio and the number of frames to be read at once.
+
+=end pod
+
 use Audio::PortAudio;
 use Audio::Sndfile;
 
-sub MAIN(Str $filename, Str :$source) {
+sub MAIN(Str $filename, Str :$source, Int :$buffer = 256) {
     my $pa = Audio::PortAudio.new;
     my $format = Audio::Sndfile::Info::Format::WAV +| Audio::Sndfile::Info::Subformat::PCM_16;
     my $out-file = Audio::Sndfile.new(:$filename, channels => 2, samplerate => 44100, :$format, :w);
@@ -21,8 +53,8 @@ sub MAIN(Str $filename, Str :$source) {
                     my $si = Audio::PortAudio::StreamParameters.new(device => $index,
                                                                     channel-count => 2,
                                                                     sample-format => Audio::PortAudio::StreamFormat::Float32,
-                                                                    suggested-latency => 0.05e0 );
-                    $st = $pa.open-stream($si, Audio::PortAudio::StreamParameters, 44100, 0 );
+                                                                    suggested-latency => ($la || 0.05e0 ));
+                    $st = $pa.open-stream($si, Audio::PortAudio::StreamParameters, 44100, $buffer );
                     last;
                 }
 
@@ -34,11 +66,11 @@ sub MAIN(Str $filename, Str :$source) {
         }
     }
     else {
-        $st = $pa.open-default-stream(2,0, Audio::PortAudio::StreamFormat::Float32, 44100);
+        $st = $pa.open-default-stream(2,0, Audio::PortAudio::StreamFormat::Float32, 44100, $buffer);
     }
     $st.start;
     my $p = Promise.new;
-    signal(SIGINT).tap({
+    signal(SIGINT).act({
         say "stopping recording";
         $p.keep: "stopped";
         $out-file.close;
@@ -50,8 +82,7 @@ sub MAIN(Str $filename, Str :$source) {
         react {
             whenever $write-channel -> $item {
                 if $p.status ~~ Planned {
-                    say "going to write '{ $item.elems / 2 }' frames";
-                    $out-file.write-float($item);
+                    $out-file.write-float($item[0], $item[1]);
                     $out-file.sync;
                 }
                 else {
@@ -63,12 +94,10 @@ sub MAIN(Str $filename, Str :$source) {
 
     loop {
         if $p.status ~~ Planned {
-            my $f = $st.read-available;
+            my $f = $buffer || $st.read-available;
             if $f > 0 {
                 my $buff = $st.read($f,2, num32);
-                my @b;
-                @b[$_] = $buff[$_] for ^($f * 2);#8192;
-                $write-channel.send(@b);
+                $write-channel.send([$buff, $f]);
             }
         }
         else {
