@@ -84,31 +84,13 @@ sub MAIN(Str :$host = 'localhost', Int :$port = 8000, Str :$user = 'source', Str
         $st.close;
         exit;
     });
-    my Channel $write-channel = Channel.new;
-    my $write-promise = start {
-        react {
-            whenever $write-channel -> $item {
-                if $p.status ~~ Planned {
-                    my $encoded = $encoder.encode-float(|$item, :raw);
-                    $shout.send($encoded);
-                    $shout.sync;
-                }
-                else {
-                    done;
-                }
-            }
-        }
-    };
 
+    my $f = $buffer;
     loop {
-        if $p.status ~~ Planned {
-            my $f = $buffer;
             my $buff = $st.read($f,2, num32);
-            $write-channel.send([$buff, $f]);
-        }
-        else {
-            last;
-        }
+            my $encoded = $encoder.encode-float($buff, $f, :raw);
+            $shout.send($encoded);
+            $shout.sync;
     }
 }
 
