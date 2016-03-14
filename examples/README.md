@@ -16,9 +16,9 @@ If you come up with something particularly cute I'd love to hear about them.
 
 They have depencies on some or all of:
 
-	*	[Audio::Sndfile](https://github.com/jonathanstowe/Audio-Sndfile)
-	*	[Audio::Encode::LameMP3](https://github.com/jonathanstowe/Audio-Encode-LameMP3)
-	*	[Audio::Libshout](https://github.com/jonathanstowe/Audio-Libshout)
+*	[Audio::Sndfile](https://github.com/jonathanstowe/Audio-Sndfile)
+*	[Audio::Encode::LameMP3](https://github.com/jonathanstowe/Audio-Encode-LameMP3)
+*	[Audio::Libshout](https://github.com/jonathanstowe/Audio-Libshout)
 
 You may just want to install them now.
 
