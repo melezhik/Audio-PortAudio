@@ -35,7 +35,6 @@ to be used by portaudio and the number of frames to be read at once.
 use Audio::PortAudio;
 use Audio::Encode::LameMP3;
 use Audio::Libshout;
-use NativeHelpers::Array;
 
 sub MAIN(Str :$host = 'localhost', Int :$port = 8000, Str :$user = 'source', Str :$password!, Int :$bitrate = 128, Int :$quality = 5,  Str :$mount = '/stream', Str :$source, Int :$buffer = 256, *%extra) {
     my $pa = Audio::PortAudio.new;
@@ -76,14 +75,6 @@ sub MAIN(Str :$host = 'localhost', Int :$port = 8000, Str :$user = 'source', Str
     my $encoder = Audio::Encode::LameMP3.new(:$bitrate, :$mode, :$quality);
 
     $st.start;
-    my $p = Promise.new;
-    signal(SIGINT).act({
-        say "stopping recording";
-        $p.keep: "stopped";
-        $shout.close;
-        $st.close;
-        exit;
-    });
 
     my $f = $buffer;
     loop {
