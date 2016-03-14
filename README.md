@@ -59,4 +59,62 @@ check with the source configuration or experiment to find a correct and
 working value for buffer sizes.  The symptoms of this may include choppy,
 "syncopated" or "phased" output.
 
+This is based on the original work of
+(Peschwa)[https://github.com/peschwa/Audio-PortAudio] which I forked and
+then just completely hijacked when I realised it could be potentially
+be made useful :) So most of the credit probably goes to him.
+
+## Installation
+
+This module depends on having the portaudio library installed, your
+operating system may offer this is as a package that you can install
+with whatever tools the system uses (it may be installed already as it
+is quite a common dependency for audio applications,) or you may be able
+to obtain and install the source from http://www.portaudio.com/download.html.
+If you take the latter route you want to make sure that you install at
+least one driver for it to be useful.
+
+If you have (panda)[https://github.com/tadzik/panda] installed you can
+install this module directly:
+
+    panda install Audio::PortAudio
+
+Or if you have a copy of this source then you can do so from within the
+distribution directory:
+
+    panda install .
+
+I haven't tested with other installers such as (zef)[https://github.com/ugexe/zef]
+but I have no reason to believe that it shouldn't work just as well.
+
+## Support
+
+This probably falls into the 'experimental' category, it is definitely usable
+but I will not be surprised if you have difficulty using it because of the
+performance constraints alluded to above.  
+
+It is also quite difficult to do automated tests beyond basic sanity checks, as
+it would have to be able to "hear" the output or the result of input which may
+be beyond our control so the examples stand in as a proxy for proper unit tests.
+
+Anyway if you're still reading and you do have a problem then please provide as
+much detail as possible, including the details and configuration of your sound
+card and/or host API if possible (e.g. "jack" configuration,)
+
+I'd also be delighted to hear if you don't have problems and have made something
+really cool with this, or have patches to improve the interface (in the latter
+case a working example that demonstrates that it is usable would be nice,) or
+any other suggestions via https://github.com/jonathanstowe/Audio-PortAudio/issues
+
+I'd be particularly interested in a Perl-ish way of expressing the portaudio
+callback API, the native subs support it, it just isn't exposed through the
+class API here.
+
+## License
+
+Please see the LICENCE file in the distribution.
+
+(C) Peschwa        2015
+(C) Jonathan Stowe 2016
+
 
