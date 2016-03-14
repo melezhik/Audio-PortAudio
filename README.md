@@ -24,6 +24,8 @@ loop {
 
 ```
 
+See also [the examples directory](examples)
+
 ## Description
 
 This module provides a mechanism to get audio into and out of your
