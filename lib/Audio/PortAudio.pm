@@ -2,6 +2,163 @@ use v6.c;
 
 use NativeCall;
 
+=begin pod
+
+=head1 NAME
+
+Audio::PortAudio - Access to audio input and output devices
+
+=head1 SYNOPSIS
+
+=begin code
+
+use Audio::PortAudio;
+
+my $pa = Audio::PortAudio.new;
+
+# get the default stream with no inputs, 2 output channels
+# for audio encoded as 32 bit floats at 44100 samplerate;
+my $stream = $pa.open-default-stream(0,2,Audio::PortAudio::Float32,44100);
+
+$stream.start;
+
+loop {
+	# get some audio data in a carray from somewhere
+	$stream.write($carray, $frame-count);
+}
+
+
+=end code
+
+See also the examples directory in the distribution
+
+=head1 DESCRIPTION
+
+This module provides a mechanism to get audio into and out of your program
+via a sound card or some other sub-system supported by the Portaudio
+library (http://www.portaudio.com/), this may include "ALSA", "JACK"
+or "OSS" on Linux, "CoreAudio" on Mac and "ASIO" on Windows, (of course
+the actual support depends on how the library was built on your system.)
+
+You will need to have the portaudio library installed on your system
+to use this, it may be available as a package or come pre-installed,
+but the details will be specific to your platform.
+
+The interface is somewhat simplified in comparison to the underlying
+library and in particular only "blocking" IO is supported at the current
+time (though this does not preclude the use of the callback API in the
+future, it's just an interface that is natural to a Perl 6 developer
+doesn't suggest itself at the moment.)
+
+It is important to note that the constraints of real-time audio data
+handling mean that you have to be careful that you allow for consistent
+and timely handing of the data to or from the device for proper results,
+you may find that for some applications you will need to avoid the use
+of any concurrency whatsoever for instance (the streaming example is
+such a case where the time budget was such that any unexpected garbage
+collection or other processor stealing activity didn't leave the process
+enough time spare to recover and the stream eventually became unusable.)
+
+Also it should be noted that some types of source API ("JACK" in
+particular,) require that you use a fixed buffer size that is consistent
+with that configured for the host service, unfortunately portaudio doesn't
+appear to provide a way of discovering this so you may need to either
+check with the source configuration or experiment to find a correct and
+working value for buffer sizes.  The symptoms of this may include choppy,
+"syncopated" or "phased" output.
+
+This is based on the original work of Peschwa
+(https://github.com/peschwa/Audio-PortAudio) which I forked and then
+just completely hijacked when I realised it could be potentially be made
+useful :) So most of the credit probably goes to him.
+
+=head1 METHODS
+
+=head2 method new
+
+    method new()
+
+The constructor doesn't currently take any arguments. It will cause C<initialize()>
+for you.
+
+=head2 method initialize
+
+    method initialize() returns Int
+
+This starts the portaudio service and will initialise all of the host API drivers
+found, which may (depending on the configuration,) cause the drivers to emit some
+output (typically ALSA and JACK will do this.) You probably don't need to call this
+yourself as it is called by the constructor, though may be necessary after 
+C<terminate> if you didn't actually end your program.
+
+=head2 method terminate
+
+    method terminate() returns Int
+
+This ends the portaudio and will shutdown all the backends, calling any methods
+except C<initialise()> after this will give rise to an exception.
+
+=head2 method device-count
+
+    method device-count() returns Int
+
+This returns the number of devices in the system.
+
+=head2 method device-info
+
+    method device-info(Int $device-number) returns DeviceInfo
+
+This returns the C<Audio::PortAudio::DeviceInfo> object for the device
+C<index> which is in the range 0 to C<device-count> exclusive.  If the
+device index is out of range or there is some other error an exception
+will be thrown.
+
+=head2 method devices
+
+    method devices()
+
+This is a convenience to return a lazy list of the devices as
+C<Audio::PortAudio::DeviceInfo> objects, it may be useful to
+enumerate the devices but you will need to keep track of the
+index in order to be able to open a stream with a particular
+device.
+
+=head2 method host-api-index
+
+    method host-api-index(HostApiTypeId $type) returns Int
+
+=head2 method host-api
+
+    method host-api(HostApiTypeId $type) returns HostApiInfo
+
+=head2 method default-output-device
+
+    method default-output-device() returns DeviceInfo
+
+=head2 method default-input-device
+
+    method default-input-device() returns DeviceInfo
+
+=head2 method open-default-stream
+
+    method open-default-stream(Int $input = 0, Int $output = 2, StreamFormat $format = StreamFormat::Float32, Int $sample-rate = 44100, Int $frames-per-buffer = 256) returns Stream
+
+=head2 method open-stream
+
+    method open-stream(StreamParameters $in-params, StreamParameters $out-params, Int $sample-rate = 44100, Int $frames-per-buffer = 256) returns Stream
+
+=head2 method is-format-supported
+
+    method is-format-supported(StreamParameters $input, StreamParameters $output, Int $sample-rate) returns Bool
+
+=head2 method error-text
+
+    method error-text(Int $error-code) returns Str
+
+
+=end pod
+
+
 class Audio::PortAudio {
 
     constant FRAMES_PER_BUFFER = 256;
@@ -92,11 +249,15 @@ class Audio::PortAudio {
     class X::PortAudio is Exception {
         has Int $.code is required;
         has Str $.error-text;
+        has Str $.what;
         method error-text() returns Str {
             if !$!error-text.defined {
                 $!error-text = Pa_GetErrorText($!code);
             }
             $!error-text;
+        }
+        method message() {
+            "{ $!what } : { self.error-text }";
         }
     }
 
@@ -249,13 +410,21 @@ class Audio::PortAudio {
     
     sub Pa_Initialize() returns int32 is native('portaudio',v2) {...}
 
-    method initialize() returns Int {
-        Pa_Initialize();
+    method initialize() returns Bool {
+        my $rc = Pa_Initialize();
+        if $rc != 0 {
+            X::PortAudio.new(code => $rc, what => "initialising").throw;
+        }
+        True;
     }
     sub Pa_Terminate() returns int32 is native('portaudio',v2) {...}
 
-    method terminate() returns Int {
-        Pa_Terminate();
+    method terminate() returns Bool {
+        my $rc = Pa_Terminate();
+        if $rc != 0 {
+            X::PortAudio.new(code => $rc, what => "terminating").throw;
+        }
+        True;
     }
 
     sub Pa_GetDeviceCount() returns int32 is native('portaudio',v2) {...}
