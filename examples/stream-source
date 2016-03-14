@@ -35,6 +35,7 @@ to be used by portaudio and the number of frames to be read at once.
 use Audio::PortAudio;
 use Audio::Encode::LameMP3;
 use Audio::Libshout;
+use NativeHelpers::Array;
 
 sub MAIN(Str :$host = 'localhost', Int :$port = 8000, Str :$user = 'source', Str :$password!, Int :$bitrate = 128, Int :$quality = 5,  Str :$mount = '/stream', Str :$source, Int :$buffer = 256, *%extra) {
     my $pa = Audio::PortAudio.new;
@@ -73,14 +74,12 @@ sub MAIN(Str :$host = 'localhost', Int :$port = 8000, Str :$user = 'source', Str
     my $shout = Audio::Libshout.new(:$host, :$port, :$user, :$password, :$mount, :$format, |%extra);
     $shout.open;
     my $encoder = Audio::Encode::LameMP3.new(:$bitrate, :$mode, :$quality);
-    my $send-channel = $shout.send-channel;
 
     $st.start;
     my $p = Promise.new;
     signal(SIGINT).act({
         say "stopping recording";
         $p.keep: "stopped";
-        $send-channel.close;
         $shout.close;
         $st.close;
         exit;
@@ -90,8 +89,9 @@ sub MAIN(Str :$host = 'localhost', Int :$port = 8000, Str :$user = 'source', Str
         react {
             whenever $write-channel -> $item {
                 if $p.status ~~ Planned {
-                    my $encoded = $encoder.encode-float($item[0], $item[1], :raw);
-                    $send-channel.send($encoded);
+                    my $encoded = $encoder.encode-float(|$item, :raw);
+                    $shout.send($encoded);
+                    $shout.sync;
                 }
                 else {
                     done;
