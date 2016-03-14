@@ -292,6 +292,13 @@ class Audio::PortAudio {
         my Int $device-number = Pa_GetDefaultOutputDevice();
         self.device-info($device-number);
     }
+
+    sub Pa_GetDefaultInputDevice() returns int32 is native('portaudio',v2) {...}
+
+    method default-input-device() returns DeviceInfo {
+        my Int $device-number = Pa_GetDefaultInputDevice();
+        self.device-info($device-number);
+    }
     
     sub Pa_OpenDefaultStream(CArray[Stream] $stream,
                              int32 $input,
