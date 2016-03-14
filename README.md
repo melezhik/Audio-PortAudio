@@ -28,7 +28,7 @@ loop {
 
 This module provides a mechanism to get audio into and out of your
 program via a sound card or some other sub-system supported by the
-(portaudio)[http://www.portaudio.com/], this may include "ALSA", "JACK"
+[portaudio](http://www.portaudio.com/), this may include "ALSA", "JACK"
 or "OSS" on Linux, "CoreAudio" on Mac and "ASIO" on Windows, (of course
 the actual support depends on how the library was built on your system.)
 
@@ -60,7 +60,7 @@ working value for buffer sizes.  The symptoms of this may include choppy,
 "syncopated" or "phased" output.
 
 This is based on the original work of
-(Peschwa)[https://github.com/peschwa/Audio-PortAudio] which I forked and
+[Peschwa](https://github.com/peschwa/Audio-PortAudio) which I forked and
 then just completely hijacked when I realised it could be potentially
 be made useful :) So most of the credit probably goes to him.
 
@@ -74,7 +74,7 @@ to obtain and install the source from http://www.portaudio.com/download.html.
 If you take the latter route you want to make sure that you install at
 least one driver for it to be useful.
 
-If you have (panda)[https://github.com/tadzik/panda] installed you can
+If you have [panda](https://github.com/tadzik/panda) installed you can
 install this module directly:
 
     panda install Audio::PortAudio
@@ -84,7 +84,7 @@ distribution directory:
 
     panda install .
 
-I haven't tested with other installers such as (zef)[https://github.com/ugexe/zef]
+I haven't tested with other installers such as [zef](https://github.com/ugexe/zef)
 but I have no reason to believe that it shouldn't work just as well.
 
 ## Support
