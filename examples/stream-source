@@ -6,29 +6,48 @@ use v6.c;
 
 =head1 NAME
 
-record-wav - record data from some source to a WAV file
+stream-source - stream audio from some portaudio source to icecast
 
 =head1 SYNOPSIS
 
 =begin code
 
-record-wav [--source=<source name>] [--buffer=<256>] outfile
+stream-source   --password=<source pw> 
+                [--user=<"source">] 
+                [--host=<"localhost">] 
+                [--port=<8000>]
+                [--mount=<"/stream">]
+                [--source=<source name>] 
+                [--bitrate=<128>]
+                [--quality=<5>]
+                [--buffer=<256>]
 
 =end code
 
 =head1 DESCRIPTION
 
-By default this will record audio from the default source (as
-determinied by PortAudio, and probably your computers microphone
-or line in,) to the specified .wav file as a 16 bit / 44100 WAV.
+By default this will stream audio from the default portaudio source to
+an icecast server with default configuration on the localhost.  You must
+specify the icecast password (you did actually change that right?) You
+can specify an alternative user name to "source" (if you are using other
+than a default icecast configuration,) and a mount point name etc. The
+C<source> is the name of a portaudio source that you can identity with
+e.g. "enum-devices" in this examples directory.
 
-The source can be specified by name which can be determined by
-the script C<enum-devices>, the source must have two input channels.
+Some portaudio Host Api types (e.g. "JACK" )will require that you specify
+a C<buffer> size that matches some configured value, you may have to
+check the configuration or documentation of the the host.  With JACK
+for instance you can set the buffer size at the jackd command line
+(as C<period>) obviously in this case a larger buffer will give higher
+latency values, however at the current time you may have better success
+with higher values as the time budget within the read loop is very tight
+to achieve anything approaching usable throughput.
 
-Some sources (such as JACK,) may require a specific, fixed, buffer
-size in order to work in a consistent manner and this can be set
-with the C<buffer> option which is the size in "frames" of the buffer
-to be used by portaudio and the number of frames to be read at once.
+Similarly the application avoids any threading managed by Perl as the
+latency headroom is so small it doesn't seem to be able to recover very
+well when some processor time is taken by another thread. Buffering is
+left as an exercise for the developer.
+
 
 =end pod
 
@@ -77,6 +96,9 @@ sub MAIN(Str :$host = 'localhost', Int :$port = 8000, Str :$user = 'source', Str
     $st.start;
 
     my $f = $buffer;
+    # There really isn't time to do anything else here but get the
+    # input buffer, encode and stick it to icecast, doing this
+    # asynchronously seems to work a lot less well.
     loop {
             my $buff = $st.read($f,2, num32);
             my $encoded = $encoder.encode-float($buff, $f, :raw);
