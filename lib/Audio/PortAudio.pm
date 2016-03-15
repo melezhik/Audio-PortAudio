@@ -430,7 +430,11 @@ class Audio::PortAudio {
     sub Pa_GetDeviceCount() returns int32 is native('portaudio',v2) {...}
 
     method device-count() returns Int {
-        Pa_GetDeviceCount();
+        my $count = Pa_GetDeviceCount();
+        if $count < 0 {
+            X::PortAudio.new(code => $count, what => "getting device count").throw;
+        }
+        $count;
     }
 
     
@@ -459,6 +463,9 @@ class Audio::PortAudio {
 
     method default-output-device() returns DeviceInfo {
         my Int $device-number = Pa_GetDefaultOutputDevice();
+        if $device-number < 0 {
+            X::PortAudio.new(code => $device-number, what => "getting output device").throw;
+        }
         self.device-info($device-number);
     }
 
@@ -466,6 +473,9 @@ class Audio::PortAudio {
 
     method default-input-device() returns DeviceInfo {
         my Int $device-number = Pa_GetDefaultInputDevice();
+        if $device-number < 0 {
+            X::PortAudio.new(code => $device-number, what => "getting input device").throw;
+        }
         self.device-info($device-number);
     }
     
