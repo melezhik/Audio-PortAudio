@@ -7,9 +7,11 @@ use LibraryCheck;
 use Audio::PortAudio;
 
 if library-exists('portaudio', v2) {
+    pass "got portaudio";
     diag "some drivers may emit some output when they are initialised, sorry about that";
     my $obj;
     lives-ok { $obj = Audio::PortAudio.new }, "create portaudio object";
+    diag "testing with { $obj.version }";
     isa-ok $obj, Audio::PortAudio, "and it is the right thing";
     my $c;
     lives-ok { $c = $obj.device-count() }, "get device count";
