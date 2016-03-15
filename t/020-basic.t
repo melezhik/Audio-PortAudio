@@ -35,6 +35,7 @@ if library-exists('portaudio', v2) {
         ok $stream.stopped, "and it is obviously stopped";
         lives-ok { $stream.start }, "start the stream";
         ok $stream.active, "and it is active now";
+        is $stream.info.sample-rate, 44100e0, "got some info";
         nok $stream.stopped, "and it is obviously not stopped anymore";
         ok $stream.write-available, "and write-available gives us something";
 

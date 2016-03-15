@@ -569,6 +569,42 @@ for the buffer then this should always be used when reading from the stream.
 If there is a problem reading, or the stream has been closed then an exception
 will be thrown.
 
+=head2 method info
+
+    method info() returns StreamInfo
+
+This provides accurate information from the backend while the stream is actually
+running, it can be used for informational purposes or possibly to tune some
+computation, the L<Audio::PortAudio::StreamInfo> class is described below.
+
+=head1 Audio::PortAudio::StreamInfo
+
+This is the class that is returned by the C<info> method of the Stream.  It contains
+information from the backend while the stream is running.
+
+=head2 struct-version
+
+This is the internal version of the structure returned by the API.
+
+=head2 input-latency
+
+This is the calculated latency estimate for input from the backend, it may differ
+from that provided as the suggested latency when the stream was opened.  If the
+stream was opened for output only this will be 0e0.
+
+=head2 output-latency
+
+This is the calculated latency estimate for output from the backend, it may differ
+from that provided as the suggested latency when the stream was opened.  If the
+stream was opened for input only this will be 0e0.
+
+=head2 sample-rate
+
+This is the actual sample-rate that is being used by portaudio, this may differ from
+that provided to the stream open or reported in the device info if portaudio is aware
+of inaccuracies in the information determined from the hardware or configration and
+has adjusted it.
+
 
 
 =end pod
@@ -747,6 +783,13 @@ class Audio::PortAudio {
         }
     }
 
+    class StreamInfo is repr('CStruct') {
+        has int32 $.struct-version;
+        has num64 $.input-latency;
+        has num64 $.output-latency;
+        has num64 $.sample-rate;
+    }
+
     class Stream is repr('CPointer') {
         sub Pa_StartStream(Stream $stream) returns int32 is native('portaudio',v2) {...}
 
@@ -817,6 +860,25 @@ class Audio::PortAudio {
             }
             $buff;
         }
+
+        sub Pa_GetStreamCpuLoad(Stream $stream) returns num64 is native('portaudio', v2) { * }
+
+        method cpu-load() returns Num {
+            Pa_GetStreamCpuLoad(self);
+        }
+
+        sub Pa_GetStreamTime( Stream $stream ) returns num64 is native('portaudio', v2) { * }
+
+        method time() returns Num {
+             Pa_GetStreamTime(self);
+        }
+
+        sub Pa_GetStreamInfo( Stream $stream ) returns StreamInfo is native('portaudio', v2) { * }
+
+        method info() returns StreamInfo {
+            Pa_GetStreamInfo(self);
+        }
+
     }
 
     submethod BUILD() {
