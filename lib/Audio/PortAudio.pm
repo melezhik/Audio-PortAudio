@@ -249,7 +249,12 @@ to consult the configuration of the backend to determine what this
 value should be.  Some backends (such as ALSA,) on the other hand,
 don't seem to be quite as sensitive and this can be set to some value
 that your application can easily handle in the time available ( that is
-(buffer-size * channels)/samplerate seconds.)
+(buffer-size * channels)/samplerate seconds.) Supplying a value of 0
+for buffer size will cause portaudio to adjust its own buffer to suit
+the calculated latency and throughput, thus allowing for reads and
+writes based on the available data, however this does not over-ride
+the earlier comments about fixed buffer sizes for some backends (it
+really doesn't work well with JACK for instance.)
 
 The C<$samplerate> should match the capabilities or configuration
 of your device and the samplerate of the data that is being
@@ -604,8 +609,6 @@ This is the actual sample-rate that is being used by portaudio, this may differ 
 that provided to the stream open or reported in the device info if portaudio is aware
 of inaccuracies in the information determined from the hardware or configration and
 has adjusted it.
-
-
 
 =end pod
 
