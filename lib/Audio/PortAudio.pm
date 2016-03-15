@@ -178,14 +178,14 @@ be available on any given system.
     method host-api(HostApiTypeId $type) returns HostApiInfo
 
 Given a C<HostApiTypeId> as described above this will return
-a L<HostApiInfo> object  that describes the host api on this
+a L<Audio::PortAudio::HostApiInfo|#Audio::PortAudio::HostApiInfo> object  that describes the host api on this
 system.  
 
 =head2 method default-output-device
 
     method default-output-device() returns DeviceInfo
 
-This returns a L<Audio::PortAudio::DeviceInfo> object that
+This returns a L<Audio::PortAudio::DeviceInfo|#Audio::PortAudio::DeviceInfo> object that
 describes the device that will be used for output if the
 default output stream is asked for. Depending on the
 configuration of your system this may differ from the
@@ -196,7 +196,7 @@ if there was a problem determining the device.
 
     method default-input-device() returns DeviceInfo
 
-This returns a L<Audio::PortAudio::DeviceInfo> object that
+This returns a L<Audio::PortAudio::DeviceInfo|#Audio::PortAudio::DeviceInfo> object that
 describes the device that be used for input if the
 default input stream is asked for.  Depending on the
 configuration of your system this may differ from the
@@ -208,12 +208,12 @@ if there was a problem determining the device.
     method open-default-stream(Int $input = 0, Int $output = 2, StreamFormat $format = StreamFormat::Float32, Int $sample-rate = 44100, Int $frames-per-buffer = 256) returns Stream
 
 This opens a stream for reading and/or writing on the default device,
-returning a L<Audio::PortAudio::Stream> object or throwing an
+returning a L<Audio::PortAudio::Stream|#Audio::PortAudio::Stream> object or throwing an
 exception if there was a problem opening the stream.
 
 The default values will almost certainly B<not> work for a lot of
 applications, of particular importance is C<format> which should
-be a member of the enumeration L<Audio::PortAudio::StreamFormat>:
+be a member of the enumeration L<Audio::PortAudio::StreamFormat|#Audio::PortAudio::StreamFormat>:
 
 =item Float32
 
@@ -282,8 +282,8 @@ the device. Sorry about that, but it appears to be a portaudio limitation.
 
     method open-stream(StreamParameters $in-params, StreamParameters $out-params, Int $sample-rate = 44100, Int $frames-per-buffer = 256) returns Stream
 
-This returns the L<Audio::PortAudio::Stream> opened with the parameters supplied
-in the L<Audio::PortAudio::StreamParameters> C<$in-params> and C<$out-params>, described
+This returns the L<Audio::PortAudio::Stream|#Audio::PortAudio::Stream> opened with the parameters supplied
+in the L<Audio::PortAudio::StreamParameters|#Audio::PortAudio::StreamParameters> C<$in-params> and C<$out-params>, described
 below, if either input or output is not required then a StreamParameters type object
 can be passed for either parameter.  C<$sample-rate> and C<$frames-per-buffer> is the
 same as for C<open-default-stream> and apply to both input and output.
@@ -296,7 +296,7 @@ described below.
 
     method is-format-supported(StreamParameters $input, StreamParameters $output, Int $sample-rate) returns Bool
 
-This returns a Boolean to indicate whether the L<StreamParameters> C<$input> and C<$output>
+This returns a Boolean to indicate whether the L<Audio::PortAudio::StreamParameters|#Audio::PortAudio::StreamParameters> C<$input> and C<$output>
 and the sample rate would work for C<open-stream>, if it returns False it is likely that
 C<open-stream> would throw an exception with the same parameters.
 
@@ -384,7 +384,7 @@ be coerced appropriately.
 
     method host-api() returns HostApiInfo
 
-This returns the L<Audio::PortAudio::HostApiInfo> object representing the host api
+This returns the L<Audio::PortAudio::HostApiInfo|#Audio::PortAudio::HostApiInfo> object representing the host api
 of this device, which contains useful information about the backed API. 
 
 =head1 Audio::PortAudio::HostApiInfo
@@ -417,16 +417,16 @@ be used to enumerate the devices.
 This is the "device index" of the default input device for this backend, this
 can be used to get, for example, the default latency for a backend such as
 JACK that might not report the correct value for its clients, by passing this
-value to the C<device-info> method of the L<Audio::PortAudio> object to get
-the appropriate L<Audio::PortAudio::DeviceInfo> object.
+value to the C<device-info> method of the L<Audio::PortAudio|#Audio::PortAudio> object to get
+the appropriate L<Audio::PortAudio::DeviceInfo|#Audio::PortAudio::DeviceInfo> object.
 
 =head2 default-output-device 
 
 This is the "device index" of the default output device for this backend, this
 can be used to get, for example, the default latency for a backend such as
 JACK that might not report the correct value for its clients, by passing this
-value to the C<device-info> method of the L<Audio::PortAudio> object to get
-the appropriate L<Audio::PortAudio::DeviceInfo> object. 
+value to the C<device-info> method of the L<Audio::PortAudio|#Audio::PortAudio> object to get
+the appropriate L<Audio::PortAudio::DeviceInfo|#Audio::PortAudio::DeviceInfo> object. 
 
 This will usually the same as the input device but this shouldn't be relied on.
 
@@ -580,7 +580,7 @@ will be thrown.
 
 This provides accurate information from the backend while the stream is actually
 running, it can be used for informational purposes or possibly to tune some
-computation, the L<Audio::PortAudio::StreamInfo> class is described below.
+computation, the L<Audio::PortAudio::StreamInfo|#Audio::PortAudio::StreamInfo> class is described below.
 
 =head1 Audio::PortAudio::StreamInfo
 
