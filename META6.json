@@ -5,7 +5,7 @@
    "test-depends" : [ "LibraryCheck" ],
    "resource" : {},
    "support" : {
-      "source" : "git://github.com/jonathanstowe/Audio-PortAudio.git"
+      "source" : "git://github.com/Perl6-Noise-Gang/Audio-PortAudio.git"
    },
    "tags" : [ "audio", "portaudio", "input", "output" ],
    "license" : "perl",
@@ -14,10 +14,10 @@
       "Jonathan Stowe <jns+gh@gellyfish.co.uk>"
    ],
    "depends" : [],
-   "source-url" : "git://github.com/jonathanstowe/Audio-PortAudio.git",
-   "auth" : "github:jonathanstowe",
+   "source-url" : "git://github.com/Perl6-Noise-Gang/Audio-PortAudio.git",
+   "auth" : "github:Perl6-Noise-Gang",
    "name" : "Audio::PortAudio",
-   "version" : "0.0.1",
+   "version" : "0.0.2",
    "description" : "Access to audio input and output devices",
    "perl" : "6.c"
 }

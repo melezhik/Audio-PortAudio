@@ -103,12 +103,12 @@ Anyway if you're still reading and you do have a problem then please provide as
 much detail as possible, including the details and configuration of your sound
 card and/or host API if possible (e.g. "jack" configuration,)
 
-I'd also be delighted to hear if you don't have problems and have made something
+We'd also be delighted to hear if you don't have problems and have made something
 really cool with this, or have patches to improve the interface (in the latter
 case a working example that demonstrates that it is usable would be nice,) or
-any other suggestions via https://github.com/jonathanstowe/Audio-PortAudio/issues
+any other suggestions via https://github.com/Perl6-Noise-Gang/Audio-PortAudio/issues
 
-I'd be particularly interested in a Perl-ish way of expressing the portaudio
+We'd be particularly interested in a Perl-ish way of expressing the portaudio
 callback API, the native subs support it, it just isn't exposed through the
 class API here.
 
@@ -116,7 +116,8 @@ class API here.
 
 Please see the LICENCE file in the distribution.
 
-(C) Peschwa        2015
-(C) Jonathan Stowe 2016
+© Peschwa           2015
+© Jonathan Stowe    2016
+© Perl 6 Noise Gang 2016
 
 
