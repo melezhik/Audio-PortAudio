@@ -112,7 +112,7 @@ We'd be particularly interested in a Perl-ish way of expressing the portaudio
 callback API, the native subs support it, it just isn't exposed through the
 class API here.
 
-## License
+## Licence
 
 Please see the LICENCE file in the distribution.
 
