@@ -2,6 +2,8 @@
 
 Access to audio input and output devices
 
+![Build Status](https://github.com/Raku-Noise-Gang/Audio-PortAudio/workflows/CI/badge.svg)
+
 ## Synopsis
 
 ```raku
