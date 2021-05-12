@@ -1,5 +1,10 @@
+v0.0.4		Wed 12 May 19:12:01 BST 2021
+	* Renaming and tidying
+    * Add GH action
+    * Use explicit buffer size in examples because they don't work otherwise with recent pulseaudio
+	* Add the aspirational play-sine as Raku is fast enough now
 v0.0.3		Tue Jul 18 20:01:23 2017 +0100 
-	* Fix for write-vailable test from kybr
+	* Fix for write-available test from kybr
 v0.0.2		Tue May 3 14:15:20 2016 +0100 
 	* Bounce on moving to noise gang
 v0.0.1		Tue Mar 15 21:01:58 2016 +0000 

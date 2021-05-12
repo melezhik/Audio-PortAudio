@@ -4,23 +4,24 @@ Access to audio input and output devices
 
 ## Synopsis
 
-```perl6
+```raku
 
 use Audio::PortAudio;
 
 my $pa = Audio::PortAudio.new;
 
 # get the default stream with no inputs, 2 output channels
-# for audio encoded as 32 bit floats at 44100 samplerate;
-my $stream = $pa.open-default-stream(0,2,Audio::PortAudio::Float32,44100);
+# for audio encoded as 32 bit floats at 44100 samplerate
+# with a frame buffer of 512;
+my $stream = $pa.open-default-stream(0,2,Audio::PortAudio::Float32,44100,512);
 
 $stream.start;
 
 loop {
 	# get some audio data in a carray from somewhere
+   # frame-count should be no more than the buffer supplied to open
 	$stream.write($carray, $frame-count);
 }
-
 
 ```
 
@@ -41,7 +42,7 @@ but the details will be specific to your platform.
 The interface is somewhat simplified in comparison to the underlying
 library and in particular only "blocking" IO is supported at the current
 time (though this does not preclude the use of the callback API in the
-future, it's just an interface that is natural to a Perl 6 developer
+future, it's just an interface that is natural to a Raku developer
 doesn't suggest itself at the moment.)
 
 It is important to note that the constraints of real-time audio data
@@ -85,6 +86,10 @@ distribution directory:
 
     zef install .
 
+Depending on what drivers you have installed the tests may cause a lot of
+diagnostic output from the drivers themselves, Alsa and Jack seem to be the
+worst culprits.
+
 ## Support
 
 This probably falls into the 'experimental' category, it is definitely usable
@@ -102,18 +107,16 @@ card and/or host API if possible (e.g. "jack" configuration,)
 We'd also be delighted to hear if you don't have problems and have made something
 really cool with this, or have patches to improve the interface (in the latter
 case a working example that demonstrates that it is usable would be nice,) or
-any other suggestions via https://github.com/Perl6-Noise-Gang/Audio-PortAudio/issues
+any other suggestions via https://github.com/Raku-Noise-Gang/Audio-PortAudio/issues
 
-We'd be particularly interested in a Perl-ish way of expressing the portaudio
+We'd be particularly interested in a Raku-ish way of expressing the portaudio
 callback API, the native subs support it, it just isn't exposed through the
 class API here.
 
 ## Licence
 
-Please see the LICENCE file in the distribution.
+This is free software please see the [LICENCE](LICENCE) file in the distribution.
 
 © Peschwa           2015
 © Jonathan Stowe    2016
-© Perl 6 Noise Gang 2016, 2017
-
-
+© Raku Noise Gang 2016 - 2021

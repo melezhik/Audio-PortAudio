@@ -1,6 +1,4 @@
-#!perl6
-
-use v6.c;
+#!/usr/bin/env raku
 
 =begin pod
 
@@ -12,12 +10,12 @@ stream-source - stream audio from some portaudio source to icecast
 
 =begin code
 
-stream-source   --password=<source pw> 
-                [--user=<"source">] 
-                [--host=<"localhost">] 
+stream-source   --password=<source pw>
+                [--user=<"source">]
+                [--host=<"localhost">]
                 [--port=<8000>]
                 [--mount=<"/stream">]
-                [--source=<source name>] 
+                [--source=<source name>]
                 [--bitrate=<128>]
                 [--quality=<5>]
                 [--buffer=<256>]
@@ -58,7 +56,7 @@ use Audio::Libshout;
 sub MAIN(Str :$host = 'localhost', Int :$port = 8000, Str :$user = 'source', Str :$password!, Int :$bitrate = 128, Int :$quality = 5,  Str :$mount = '/stream', Str :$source, Int :$buffer = 256, *%extra) {
     my $pa = Audio::PortAudio.new;
     my $st;
-    
+
     my $format = Audio::Libshout::Format::MP3;
     my $mode   = Audio::Encode::LameMP3::JointStereo;
 
@@ -108,4 +106,4 @@ sub MAIN(Str :$host = 'localhost', Int :$port = 8000, Str :$user = 'source', Str
 }
 
 
-# vim: expandtab shiftwidth=4 ft=perl6
+# vim: expandtab shiftwidth=4 ft=raku

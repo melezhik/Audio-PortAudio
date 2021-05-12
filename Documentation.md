@@ -30,7 +30,7 @@ This module provides a mechanism to get audio into and out of your program via a
 
 You will need to have the portaudio library installed on your system to use this, it may be available as a package or come pre-installed, but the details will be specific to your platform.
 
-The interface is somewhat simplified in comparison to the underlying library and in particular only "blocking" IO is supported at the current time (though this does not preclude the use of the callback API in the future, it's just an interface that is natural to a Perl 6 developer doesn't suggest itself at the moment.)
+The interface is somewhat simplified in comparison to the underlying library and in particular only "blocking" IO is supported at the current time (though this does not preclude the use of the callback API in the future, it's just an interface that is natural to a Raku developer doesn't suggest itself at the moment.)
 
 It is important to note that the constraints of real-time audio data handling mean that you have to be careful that you allow for consistent and timely handing of the data to or from the device for proper results, you may find that for some applications you will need to avoid the use of any concurrency whatsoever for instance (the streaming example is such a case where the time budget was such that any unexpected garbage collection or other processor stealing activity didn't leave the process enough time spare to recover and the stream eventually became unusable.)
 
@@ -51,35 +51,35 @@ The constructor doesn't currently take any arguments. It will cause `initialize(
 method version
 --------------
 
-    method version() returns Str
+    method version( --> Str )
 
 This returns the portaudio library version string that may be useful for diagnostic purposes.
 
 method initialize
 -----------------
 
-    method initialize() returns Bool
+    method initialize( --> Bool )
 
-This starts the portaudio service and will initialise all of the host API drivers found, which may (depending on the configuration,) cause the drivers to emit some output (typically ALSA and JACK will do this.) You probably don't need to call this yourself as it is called by the constructor, though may be necessary after  `terminate` if you didn't actually end your program. If there was a problem initializing the library then an exception will be thrown.
+This starts the portaudio service and will initialise all of the host API drivers found, which may (depending on the configuration,) cause the drivers to emit some output (typically ALSA and JACK will do this.) You probably don't need to call this yourself as it is called by the constructor, though may be necessary after `terminate` if you didn't actually end your program. If there was a problem initializing the library then an exception will be thrown.
 
 method terminate
 ----------------
 
-    method terminate() returns Int
+    method terminate( --> Int )
 
 This ends the portaudio and will shutdown all the backends, calling any methods except `initialise()` after this will give rise to an exception.
 
 method device-count
 -------------------
 
-    method device-count() returns Int
+    method device-count( --> Int )
 
 This returns the number of devices in the system.
 
 method device-info
 ------------------
 
-    method device-info(Int $device-number) returns DeviceInfo
+    method device-info(Int $device-number --> DeviceInfo )
 
 This returns the `Audio::PortAudio::DeviceInfo` object for the device `index` which is in the range 0 to `device-count` exclusive. If the device index is out of range or there is some other error an exception will be thrown.
 
@@ -93,7 +93,7 @@ This is a convenience to return a lazy list of the devices as `Audio::PortAudio:
 method host-api-index
 ---------------------
 
-    method host-api-index(HostApiTypeId $type) returns Int
+    method host-api-index(HostApiTypeId $type --> Int )
 
 This returns the index number of the host API as used in the `Audio::PortAudio::DeviceInfo` given the host API type, and can be used to enumerate devices of a certain type from the `devices` list. `HostApiTypeId` is an enumeration with the following values:
 
@@ -130,28 +130,28 @@ It is unlikely that more than a couple of these will actually be available on an
 method host-api
 ---------------
 
-    method host-api(HostApiTypeId $type) returns HostApiInfo
+    method host-api(HostApiTypeId $type --> HostApiInfo )
 
-Given a `HostApiTypeId` as described above this will return a [Audio::PortAudio::HostApiInfo](#Audio::PortAudio::HostApiInfo) object that describes the host api on this system. 
+Given a `HostApiTypeId` as described above this will return a [Audio::PortAudio::HostApiInfo](#Audio::PortAudio::HostApiInfo) object that describes the host api on this system.
 
 method default-output-device
 ----------------------------
 
-    method default-output-device() returns DeviceInfo
+    method default-output-device( --> DeviceInfo )
 
 This returns a [Audio::PortAudio::DeviceInfo](#Audio::PortAudio::DeviceInfo) object that describes the device that will be used for output if the default output stream is asked for. Depending on the configuration of your system this may differ from the `default-input-device`. An exception will be thrown if there was a problem determining the device.
 
 method default-input-device
 ---------------------------
 
-    method default-input-device() returns DeviceInfo
+    method default-input-device( --> DeviceInfo )
 
 This returns a [Audio::PortAudio::DeviceInfo](#Audio::PortAudio::DeviceInfo) object that describes the device that be used for input if the default input stream is asked for. Depending on the configuration of your system this may differ from the `default-outpur-device`. An exception will be thrown if there was a problem determining the device.
 
 method open-default-stream
 --------------------------
 
-    method open-default-stream(Int $input = 0, Int $output = 2, StreamFormat $format = StreamFormat::Float32, Int $sample-rate = 44100, Int $frames-per-buffer = 256) returns Stream
+    method open-default-stream(Int $input = 0, Int $output = 2, StreamFormat $format = StreamFormat::Float32, Int $sample-rate = 44100, Int $frames-per-buffer = 256 --> Stream )
 
 This opens a stream for reading and/or writing on the default device, returning a [Audio::PortAudio::Stream](#Audio::PortAudio::Stream) object or throwing an exception if there was a problem opening the stream.
 
@@ -159,7 +159,7 @@ The default values will almost certainly **not** work for a lot of applications,
 
   * Float32
 
-  * Int32 
+  * Int32
 
   * Int24
 
@@ -184,7 +184,7 @@ The `$input` and `$output` parameters indicate the number of channels to be open
 method open-stream
 ------------------
 
-    method open-stream(StreamParameters $in-params, StreamParameters $out-params, Int $sample-rate = 44100, Int $frames-per-buffer = 256) returns Stream
+    method open-stream(StreamParameters $in-params, StreamParameters $out-params, Int $sample-rate = 44100, Int $frames-per-buffer = 256 --> Stream )
 
 This returns the [Audio::PortAudio::Stream](#Audio::PortAudio::Stream) opened with the parameters supplied in the [Audio::PortAudio::StreamParameters](#Audio::PortAudio::StreamParameters) `$in-params` and `$out-params`, described below, if either input or output is not required then a StreamParameters type object can be passed for either parameter. `$sample-rate` and `$frames-per-buffer` is the same as for `open-default-stream` and apply to both input and output.
 
@@ -193,14 +193,14 @@ This will throw an exception if the stream cannot be opened with the parameters 
 method is-format-supported
 --------------------------
 
-    method is-format-supported(StreamParameters $input, StreamParameters $output, Int $sample-rate) returns Bool
+    method is-format-supported(StreamParameters $input, StreamParameters $output, Int $sample-rate --> Bool )
 
 This returns a Boolean to indicate whether the [Audio::PortAudio::StreamParameters](#Audio::PortAudio::StreamParameters) `$input` and `$output` and the sample rate would work for `open-stream`, if it returns False it is likely that `open-stream` would throw an exception with the same parameters.
 
 method error-text
 -----------------
 
-    method error-text(Int $error-code) returns Str
+    method error-text(Int $error-code --> Str )
 
 This returns the appropriate error text for the integer code returned by the pulseaudio API calls, a negative number indicating that it is an error response. As most of the methods that call the portaudio API will infact throw an exception with the appropriate message this may not be all that useful.
 
@@ -247,12 +247,12 @@ This is a suggested value for output latency for low latency applications, expre
 default-high-input-latency;
 ---------------------------
 
-This is a suggested value for input latency for high latency applications, expressed as a Num fraction of a second. This is possibly a better value for Perl applications which are likely to be "high latency".
+This is a suggested value for input latency for high latency applications, expressed as a Num fraction of a second. This is possibly a better value for Raku applications which are likely to be "high latency".
 
 default-high-output-latency
 ---------------------------
 
-This is a suggested value for output latency for high latency applications, expressed as a Num fraction of a second. This is possibly a better value for Perl applications which are likely to be "high latency".
+This is a suggested value for output latency for high latency applications, expressed as a Num fraction of a second. This is possibly a better value for Raku applications which are likely to be "high latency".
 
 default-sample-rate;
 --------------------
@@ -262,9 +262,9 @@ This is the default sample rate for the device and will probably be the one that
 method host-api
 ---------------
 
-    method host-api() returns HostApiInfo
+    method host-api( --> HostApiInfo )
 
-This returns the [Audio::PortAudio::HostApiInfo](#Audio::PortAudio::HostApiInfo) object representing the host api of this device, which contains useful information about the backed API. 
+This returns the [Audio::PortAudio::HostApiInfo](#Audio::PortAudio::HostApiInfo) object representing the host api of this device, which contains useful information about the backed API.
 
 Audio::PortAudio::HostApiInfo
 =============================
@@ -296,10 +296,10 @@ default-input-device
 
 This is the "device index" of the default input device for this backend, this can be used to get, for example, the default latency for a backend such as JACK that might not report the correct value for its clients, by passing this value to the `device-info` method of the [Audio::PortAudio](#Audio::PortAudio) object to get the appropriate [Audio::PortAudio::DeviceInfo](#Audio::PortAudio::DeviceInfo) object.
 
-default-output-device 
-----------------------
+default-output-device
+---------------------
 
-This is the "device index" of the default output device for this backend, this can be used to get, for example, the default latency for a backend such as JACK that might not report the correct value for its clients, by passing this value to the `device-info` method of the [Audio::PortAudio](#Audio::PortAudio) object to get the appropriate [Audio::PortAudio::DeviceInfo](#Audio::PortAudio::DeviceInfo) object. 
+This is the "device index" of the default output device for this backend, this can be used to get, for example, the default latency for a backend such as JACK that might not report the correct value for its clients, by passing this value to the `device-info` method of the [Audio::PortAudio](#Audio::PortAudio) object to get the appropriate [Audio::PortAudio::DeviceInfo](#Audio::PortAudio::DeviceInfo) object.
 
 This will usually the same as the input device but this shouldn't be relied on.
 
@@ -331,7 +331,7 @@ This is the suggested latency for this stream as a Num fraction of a second. You
 host-api-specific-streaminfo
 ----------------------------
 
-This is a Pointer to some data that may be supplied to the backend, it is **not**  required by portaudio and should generally be left uninitialised.
+This is a Pointer to some data that may be supplied to the backend, it is **not** required by portaudio and should generally be left uninitialised.
 
 Audio::PortAudio::Stream
 ========================
@@ -341,7 +341,7 @@ Objects of this type are returned by `open-default-stream` and `open-stream` and
 method start
 ------------
 
-    method start() returns Bool
+    method start( --> Bool )
 
 This starts the stream, making it available for reading or writing. Attempting to read or write without first calling start will give rise to an exception.
 
@@ -350,7 +350,7 @@ An exception will be thrown if the stream cannot be started.
 method close
 ------------
 
-    method close() returns Bool
+    method close( --> Bool )
 
 This closes the stream, releasing the device. If any reads or writes are attempted after it has been closed then an exception will be thrown. You should always close a stream after you are done with it as the API will continue attempting to populate the underlying buffers until closed.
 
@@ -359,28 +359,28 @@ If you attempt to close any already closed stream an exception will be thrown.
 method stopped
 --------------
 
-    method stopped() returns Bool
+    method stopped( --> Bool )
 
 This returns a Bool to indicate whether the stream is running, it will return True before `start` has been called and after `close`.
 
 method active
 -------------
 
-    method active() returns Bool
+    method active( --> Bool )
 
 This returns a Bool to indicate whether the stream is running, it will return True after `start` has been called and before `close`.
 
 method write-available
 ----------------------
 
-    method write-available() returns Int
+    method write-available( --> Int )
 
 This returns the number of frames that can be written to the stream without the `write` call blocking, It may throw an exception if the stream isn't started or there was some other problem with the stream.
 
 method write
 ------------
 
-    method write(CArray $buf, Int $frames) returns Int
+    method write(CArray $buf, Int $frames --> Int )
 
 This writes the data in the provided CArray, which must contain data of the correct type as per the `StreamFormat` (e.g. num32, int16 etc,) and should contain `$frames` * `channels` elements.
 
@@ -390,19 +390,19 @@ For some backends which require a fixed buffer size the number of frames provide
 
 If the stream isn't started or there is some other problem writing the data then an exception will be thrown.
 
-It is deliberate that there is no sugared multi candidates for providing higher level Perl arrays with the data, as the overhead in copying the data will typically eat up too much time to keep the buffer filled. Hopefully this will change in the future.
+It is deliberate that there is no sugared multi candidates for providing higher level Raku arrays with the data, as the overhead in copying the data will typically eat up too much time to keep the buffer filled. Hopefully this will change in the future.
 
 method read-available
 ---------------------
 
-    method read-available() returns Int
+    method read-available( --> Int )
 
 This returns the number of frames available to be read from a stream, it may return 0 if the stream isn't opened for input. It may throw an exception if there was some problem with the stream.
 
 method read
 -----------
 
-    method read(Int $frames, Int $num-channels, Mu:U $type) returns CArray
+    method read(Int $frames, Int $num-channels, Mu:U $type --> CArray )
 
 This reads the specified number of frames of `$num-channels` from a stream that is opened for input, the number of channels should agree with that provided when opening the stream, and the `$type` should correspond to the type of the data that will be used for the `StreamFormat` (i.e. num32, int16, etc,). The CArray returned will be typed accordingly and will contain `$frames` * `$num-channels` elements.
 
@@ -415,7 +415,7 @@ If there is a problem reading, or the stream has been closed then an exception w
 method info
 -----------
 
-    method info() returns StreamInfo
+    method info( --> StreamInfo )
 
 This provides accurate information from the backend while the stream is actually running, it can be used for informational purposes or possibly to tune some computation, the [Audio::PortAudio::StreamInfo](#Audio::PortAudio::StreamInfo) class is described below.
 
@@ -443,3 +443,4 @@ sample-rate
 -----------
 
 This is the actual sample-rate that is being used by portaudio, this may differ from that provided to the stream open or reported in the device info if portaudio is aware of inaccuracies in the information determined from the hardware or configration and has adjusted it.
+

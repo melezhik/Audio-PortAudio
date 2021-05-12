@@ -27,10 +27,23 @@ You may just want to install them now.
 This outputs a list of the portaudio devices available to your system, it may be
 useful for determining sources for the other programs
 
-# [play-sine](play-sine)
+# [play-sine-original](play-sine-original)
 
 This outputs a constant sine-wave to the default device.  It may be useful for
 testing that your sound setup works with this module.
+
+For a while this was the only one that would work, optimised by pre-computing
+several buffers worth of frame data before starting the stream and repeatedly
+re-using them.
+
+# [play-sine-better](play-sine-better)
+
+This outputs a constant sine-wave to the default device.  It may be useful for
+testing that your sound setup works with this module.
+
+This version generates the sample frames asynchronously a buffers worth at a time,
+with a bit of modification it could be made to vary the pitch pretty much in real
+time.
 
 # [play-wav](play-wav)
 
@@ -46,4 +59,3 @@ file.
 
 This will encode and stream MP3 audio from the specified source to an icecast
 server.
-

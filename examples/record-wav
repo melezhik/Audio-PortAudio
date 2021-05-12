@@ -1,6 +1,4 @@
-#!perl6
-
-use v6.c;
+#!/usr/bin/env raku
 
 =begin pod
 
@@ -40,7 +38,7 @@ sub MAIN(Str $filename, Str :$source, Int :$buffer = 256) {
     my $format = Audio::Sndfile::Info::Format::WAV +| Audio::Sndfile::Info::Subformat::PCM_16;
     my $out-file = Audio::Sndfile.new(:$filename, channels => 2, samplerate => 44100, :$format, :w);
     my $st;
-    
+
     if $source.defined {
         my $index = 0;
         for $pa.devices -> $device {
@@ -108,4 +106,4 @@ sub MAIN(Str $filename, Str :$source, Int :$buffer = 256) {
 }
 
 
-# vim: expandtab shiftwidth=4 ft=perl6
+# vim: expandtab shiftwidth=4 ft=raku

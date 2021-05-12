@@ -1,4 +1,4 @@
-use v6.c;
+use v6;
 
 use NativeCall;
 
@@ -47,7 +47,7 @@ but the details will be specific to your platform.
 The interface is somewhat simplified in comparison to the underlying
 library and in particular only "blocking" IO is supported at the current
 time (though this does not preclude the use of the callback API in the
-future, it's just an interface that is natural to a Perl 6 developer
+future, it's just an interface that is natural to a Raku developer
 doesn't suggest itself at the moment.)
 
 It is important to note that the constraints of real-time audio data
@@ -83,39 +83,39 @@ for you.
 
 =head2 method version
 
-    method version() returns Str
+    method version( --> Str )
 
 This returns the portaudio library version string that may be useful for diagnostic
 purposes.
 
 =head2 method initialize
 
-    method initialize() returns Bool
+    method initialize( --> Bool )
 
 This starts the portaudio service and will initialise all of the host API drivers
 found, which may (depending on the configuration,) cause the drivers to emit some
 output (typically ALSA and JACK will do this.) You probably don't need to call this
-yourself as it is called by the constructor, though may be necessary after 
+yourself as it is called by the constructor, though may be necessary after
 C<terminate> if you didn't actually end your program. If there was a problem
 initializing the library then an exception will be thrown.
 
 
 =head2 method terminate
 
-    method terminate() returns Int
+    method terminate( --> Int )
 
 This ends the portaudio and will shutdown all the backends, calling any methods
 except C<initialise()> after this will give rise to an exception.
 
 =head2 method device-count
 
-    method device-count() returns Int
+    method device-count( --> Int )
 
 This returns the number of devices in the system.
 
 =head2 method device-info
 
-    method device-info(Int $device-number) returns DeviceInfo
+    method device-info(Int $device-number --> DeviceInfo )
 
 This returns the C<Audio::PortAudio::DeviceInfo> object for the device
 C<index> which is in the range 0 to C<device-count> exclusive.  If the
@@ -134,7 +134,7 @@ device.
 
 =head2 method host-api-index
 
-    method host-api-index(HostApiTypeId $type) returns Int
+    method host-api-index(HostApiTypeId $type --> Int )
 
 This returns the index number of the host API as used in the
 C<Audio::PortAudio::DeviceInfo> given the host API type, and
@@ -175,15 +175,15 @@ be available on any given system.
 
 =head2 method host-api
 
-    method host-api(HostApiTypeId $type) returns HostApiInfo
+    method host-api(HostApiTypeId $type --> HostApiInfo )
 
 Given a C<HostApiTypeId> as described above this will return
 a L<Audio::PortAudio::HostApiInfo|#Audio::PortAudio::HostApiInfo> object  that describes the host api on this
-system.  
+system.
 
 =head2 method default-output-device
 
-    method default-output-device() returns DeviceInfo
+    method default-output-device( --> DeviceInfo )
 
 This returns a L<Audio::PortAudio::DeviceInfo|#Audio::PortAudio::DeviceInfo> object that
 describes the device that will be used for output if the
@@ -194,7 +194,7 @@ if there was a problem determining the device.
 
 =head2 method default-input-device
 
-    method default-input-device() returns DeviceInfo
+    method default-input-device( --> DeviceInfo )
 
 This returns a L<Audio::PortAudio::DeviceInfo|#Audio::PortAudio::DeviceInfo> object that
 describes the device that be used for input if the
@@ -205,7 +205,7 @@ if there was a problem determining the device.
 
 =head2 method open-default-stream
 
-    method open-default-stream(Int $input = 0, Int $output = 2, StreamFormat $format = StreamFormat::Float32, Int $sample-rate = 44100, Int $frames-per-buffer = 256) returns Stream
+    method open-default-stream(Int $input = 0, Int $output = 2, StreamFormat $format = StreamFormat::Float32, Int $sample-rate = 44100, Int $frames-per-buffer = 256 --> Stream )
 
 This opens a stream for reading and/or writing on the default device,
 returning a L<Audio::PortAudio::Stream|#Audio::PortAudio::Stream> object or throwing an
@@ -217,7 +217,7 @@ be a member of the enumeration L<Audio::PortAudio::StreamFormat|#Audio::PortAudi
 
 =item Float32
 
-=item Int32 
+=item Int32
 
 =item Int24
 
@@ -280,7 +280,7 @@ the device. Sorry about that, but it appears to be a portaudio limitation.
 
 =head2 method open-stream
 
-    method open-stream(StreamParameters $in-params, StreamParameters $out-params, Int $sample-rate = 44100, Int $frames-per-buffer = 256) returns Stream
+    method open-stream(StreamParameters $in-params, StreamParameters $out-params, Int $sample-rate = 44100, Int $frames-per-buffer = 256 --> Stream )
 
 This returns the L<Audio::PortAudio::Stream|#Audio::PortAudio::Stream> opened with the parameters supplied
 in the L<Audio::PortAudio::StreamParameters|#Audio::PortAudio::StreamParameters> C<$in-params> and C<$out-params>, described
@@ -294,7 +294,7 @@ described below.
 
 =head2 method is-format-supported
 
-    method is-format-supported(StreamParameters $input, StreamParameters $output, Int $sample-rate) returns Bool
+    method is-format-supported(StreamParameters $input, StreamParameters $output, Int $sample-rate --> Bool )
 
 This returns a Boolean to indicate whether the L<Audio::PortAudio::StreamParameters|#Audio::PortAudio::StreamParameters> C<$input> and C<$output>
 and the sample rate would work for C<open-stream>, if it returns False it is likely that
@@ -302,7 +302,7 @@ C<open-stream> would throw an exception with the same parameters.
 
 =head2 method error-text
 
-    method error-text(Int $error-code) returns Str
+    method error-text(Int $error-code --> Str )
 
 This returns the appropriate error text for the integer code returned by the  pulseaudio
 API calls, a negative number indicating that it is an error response.  As most of the
@@ -361,13 +361,13 @@ as a Num fraction of a second. This can be used in a C<StreamParameters>.
 =head2 default-high-input-latency;
 
 This is a suggested value for input latency for high latency applications, expressed
-as a Num fraction of a second.  This is possibly a better value for Perl applications
+as a Num fraction of a second.  This is possibly a better value for Raku applications
 which are likely to be "high latency".
 
 =head2 default-high-output-latency
 
 This is a suggested value for output latency for high latency applications, expressed
-as a Num fraction of a second.  This is possibly a better value for Perl applications
+as a Num fraction of a second.  This is possibly a better value for Raku applications
 which are likely to be "high latency".
 
 =head2 default-sample-rate;
@@ -382,10 +382,10 @@ be coerced appropriately.
 
 =head2 method host-api
 
-    method host-api() returns HostApiInfo
+    method host-api( --> HostApiInfo )
 
 This returns the L<Audio::PortAudio::HostApiInfo|#Audio::PortAudio::HostApiInfo> object representing the host api
-of this device, which contains useful information about the backed API. 
+of this device, which contains useful information about the backed API.
 
 =head1 Audio::PortAudio::HostApiInfo
 
@@ -420,13 +420,13 @@ JACK that might not report the correct value for its clients, by passing this
 value to the C<device-info> method of the L<Audio::PortAudio|#Audio::PortAudio> object to get
 the appropriate L<Audio::PortAudio::DeviceInfo|#Audio::PortAudio::DeviceInfo> object.
 
-=head2 default-output-device 
+=head2 default-output-device
 
 This is the "device index" of the default output device for this backend, this
 can be used to get, for example, the default latency for a backend such as
 JACK that might not report the correct value for its clients, by passing this
 value to the C<device-info> method of the L<Audio::PortAudio|#Audio::PortAudio> object to get
-the appropriate L<Audio::PortAudio::DeviceInfo|#Audio::PortAudio::DeviceInfo> object. 
+the appropriate L<Audio::PortAudio::DeviceInfo|#Audio::PortAudio::DeviceInfo> object.
 
 This will usually the same as the input device but this shouldn't be relied on.
 
@@ -468,7 +468,7 @@ some backends may entirely ignore this if they have a fixed latency value.
 
 =head2 host-api-specific-streaminfo
 
-This is a Pointer to some data that may be supplied to the backend, it is B<not> 
+This is a Pointer to some data that may be supplied to the backend, it is B<not>
 required by portaudio and should generally be left uninitialised.
 
 =head1 Audio::PortAudio::Stream
@@ -479,7 +479,7 @@ and for getting the status of the audio stream.
 
 =head2 method start
 
-    method start() returns Bool
+    method start( --> Bool )
 
 This starts the stream, making it available for reading or writing. Attempting
 to read or write without first calling start will give rise to an exception.
@@ -488,7 +488,7 @@ An exception will be thrown if the stream cannot be started.
 
 =head2 method close
 
-    method close() returns Bool
+    method close( --> Bool )
 
 This closes the stream, releasing the device.  If any reads or writes are
 attempted after it has been closed then an exception will be thrown.
@@ -500,21 +500,21 @@ thrown.
 
 =head2 method stopped
 
-    method stopped() returns Bool
+    method stopped( --> Bool )
 
 This returns a Bool to indicate whether the stream is running, it will
 return True before C<start> has been called and after C<close>.
 
 =head2 method active
 
-    method active() returns Bool
+    method active( --> Bool )
 
 This returns a Bool to indicate whether the stream is running, it will
 return True after C<start> has been called and before C<close>.
 
 =head2 method write-available
 
-        method write-available() returns Int
+        method write-available( --> Int )
 
 This returns the number of frames that can be written to the stream
 without the C<write> call blocking, It may throw an exception if the
@@ -522,7 +522,7 @@ stream isn't started or there was some other problem with the stream.
 
 =head2 method write
 
-        method write(CArray $buf, Int $frames) returns Int
+        method write(CArray $buf, Int $frames --> Int )
 
 This writes the data in the provided CArray, which must contain data
 of the correct type as per the C<StreamFormat> (e.g. num32, int16 etc,)
@@ -540,13 +540,13 @@ If the stream isn't started or there is some other problem writing the
 data then an exception will be thrown.
 
 It is deliberate that there is no sugared multi candidates for providing
-higher level Perl arrays with the data, as the overhead in copying the
+higher level Raku arrays with the data, as the overhead in copying the
 data will typically eat up too much time to keep the buffer filled.
 Hopefully this will change in the future.
 
 =head2 method read-available
 
-        method read-available() returns Int
+        method read-available( --> Int )
 
 This returns the number of frames available to be read from a stream, it
 may return 0 if the stream isn't opened for input.  It may throw an
@@ -554,7 +554,7 @@ exception if there was some problem with the stream.
 
 =head2 method read
 
-        method read(Int $frames, Int $num-channels, Mu:U $type) returns CArray
+        method read(Int $frames, Int $num-channels, Mu:U $type --> CArray )
 
 This reads the specified number of frames of C<$num-channels> from a stream that
 is opened for input, the number of channels should agree with that provided when
@@ -576,7 +576,7 @@ will be thrown.
 
 =head2 method info
 
-    method info() returns StreamInfo
+    method info( --> StreamInfo )
 
 This provides accurate information from the backend while the stream is actually
 running, it can be used for informational purposes or possibly to tune some
@@ -617,7 +617,7 @@ class Audio::PortAudio {
 
     constant FRAMES_PER_BUFFER = 256;
     constant SAMPLE_RATE = 44100e0;
-    
+
     enum StreamFormat (
         Float32         => 0x00000001,
         Int32           => 0x00000002,
@@ -628,19 +628,19 @@ class Audio::PortAudio {
         CustomFormat    => 0x00010000,
         NonInterleaved  => 0x80000000,
     );
-    
+
     constant paInputUnderflow is export     = 0x00000001;
     constant paInputOverflow is export      = 0x00000002;
     constant paOutputUnderflow is export    = 0x00000004;
     constant paOutputOverflow is export     = 0x00000008;
     constant paPrimingOutput is export      = 0x00000010;
-    
+
     constant paClipOff is export                    = 0x00000001;
     constant paDitherOff is export                  = 0x00000002;
     constant paNeverDropInput is export             = 0x00000004;
     constant paPrimeOutputBufferUsingStreamCallback = 0x00000008;
     constant paPlatformSpecificFlags                = 0xFFFF0000;
-    
+
     enum ErrorCode (
         "paNoError" => 0,
         "paNotInitialized" => -10000,
@@ -673,7 +673,7 @@ class Audio::PortAudio {
         "paIncompatibleStreamHostApi",
         "paBadBufferPtr"
     );
-    
+
     enum HostApiTypeId  (
         InDevelopment   => 0,
         DirectSound     => 1,
@@ -690,21 +690,21 @@ class Audio::PortAudio {
         WASAPI          => 13,
         AudioScienceHPI => 14
     );
-    
+
     enum StreamCallbackResult (
         Continue => 0,
         Complete => 1,
         Abort => 2
     );
-    
-    sub Pa_GetErrorText(int32 $errcode) returns Str is native('portaudio',v2) {...}
 
-    # Single base exception 
+    sub Pa_GetErrorText(int32 $errcode --> Str )  is native('portaudio',v2) {...}
+
+    # Single base exception
     class X::PortAudio is Exception {
         has Int $.code is required;
         has Str $.error-text;
         has Str $.what;
-        method error-text() returns Str {
+        method error-text( --> Str )  {
             if !$!error-text.defined {
                 $!error-text = Pa_GetErrorText($!code);
             }
@@ -720,7 +720,7 @@ class Audio::PortAudio {
         has num $.currentTime;
         has num $.outputBufferDacTime;
     }
-    
+
     class StreamParameters is repr('CStruct') {
         has int32 $.device;
         has int32 $.channel-count;
@@ -738,23 +738,23 @@ class Audio::PortAudio {
         has int32   $.default-output-device;
     }
 
-    sub Pa_HostApiTypeIdToHostApiIndex( int32 $type ) returns int32 is native('portaudio', v2) { * }
+    sub Pa_HostApiTypeIdToHostApiIndex( int32 $type --> int32 )  is native('portaudio', v2) { * }
 
-    method host-api-index(HostApiTypeId $type) returns Int {
+    method host-api-index(HostApiTypeId $type --> Int )  {
         my $rc = Pa_HostApiTypeIdToHostApiIndex($type.Int);
 
         $rc;
     }
 
-    sub Pa_GetHostApiInfo(int32 $host-api) returns HostApiInfo is native('portaudio', v2) { * }
+    sub Pa_GetHostApiInfo(int32 $host-api --> HostApiInfo )  is native('portaudio', v2) { * }
 
-    method host-api(HostApiTypeId $type) returns HostApiInfo {
+    method host-api(HostApiTypeId $type --> HostApiInfo )  {
         my $index = self.host-api-index($type);
         Pa_GetHostApiInfo($index);
     }
 
-    sub Pa_HostApiDeviceIndexToDeviceIndex(int32  $host-api, int32 $host-api-device-index ) returns int32 is native('portaudio', v2) { * }
-    
+    sub Pa_HostApiDeviceIndexToDeviceIndex(int32  $host-api, int32 $host-api-device-index --> int32 )  is native('portaudio', v2) { * }
+
     class DeviceInfo is repr('CStruct') {
         has int32 $.struct-version;
         has Str $.name;
@@ -766,15 +766,20 @@ class Audio::PortAudio {
         has num64 $.default-high-input-latency;
         has num64 $.default-high-output-latency;
         has num64 $.default-sample-rate;
-    
-        method perl() {
+
+        method raku() {
             "DeviceInfo.new(struct-version => $.struct-version, name => $.name, api-version => $.api-version, " ~
             "max-input-channels => $.max-input-channels, max-output-channels => $.max-output-channels, default-low-input-latency => $.default-low-input-latency, "~
             "default-low-output-latency => $.default-low-output-latency, default-high-input-latency => $.default-high-input-latency, " ~
             "default-high-output-latency => $.default-high-output-latency, default-sample-rate => $.default-sample-rate"
         }
 
-        method host-api() returns HostApiInfo {
+        method perl() {
+            DEPRECATED('raku');
+            self.raku
+        }
+
+        method host-api( --> HostApiInfo )  {
             Pa_GetHostApiInfo($!api-version);
         }
     }
@@ -794,21 +799,21 @@ class Audio::PortAudio {
     }
 
     class Stream is repr('CPointer') {
-        sub Pa_StartStream(Stream $stream) returns int32 is native('portaudio',v2) {...}
+        sub Pa_StartStream(Stream $stream --> int32 )  is native('portaudio',v2) {...}
 
-        method start() returns Int {
+        method start( --> Int )  {
             Pa_StartStream(self);
         }
 
-        sub Pa_CloseStream(Stream $stream) returns int32 is native('portaudio',v2) {...}
+        sub Pa_CloseStream(Stream $stream --> int32 )  is native('portaudio',v2) {...}
 
-        method close() returns Int {
+        method close( --> Int )  {
             Pa_CloseStream(self);
         }
 
-        sub Pa_WriteStream(Stream $stream, CArray $buf, int32 $frames) returns int32 is native('portaudio',v2) {...}
+        sub Pa_WriteStream(Stream $stream, CArray $buf, int32 $frames --> int32 )  is native('portaudio',v2) {...}
 
-        method write(CArray $buf, Int $frames) returns Int {
+        method write(CArray $buf, Int $frames --> Int )  {
             my $rc = Pa_WriteStream(self, $buf, $frames);
 
             if $rc != 0 {
@@ -817,21 +822,21 @@ class Audio::PortAudio {
             $rc;
         }
 
-        sub Pa_IsStreamStopped(Stream $stream) returns int32 is native('portaudio', v2) { * }
+        sub Pa_IsStreamStopped(Stream $stream --> int32 )  is native('portaudio', v2) { * }
 
-        method stopped() returns Bool {
+        method stopped( --> Bool )  {
             Bool(Pa_IsStreamStopped(self));
         }
 
-        sub Pa_IsStreamActive(Stream $stream) returns int32 is native('portaudio', v2) { * }
+        sub Pa_IsStreamActive(Stream $stream --> int32 )  is native('portaudio', v2) { * }
 
-        method active() returns Bool {
+        method active( --> Bool )  {
             Bool(Pa_IsStreamActive(self));
         }
 
-        sub Pa_GetStreamReadAvailable( Stream $stream ) returns int32 is native('portaudio', v2) { * }
+        sub Pa_GetStreamReadAvailable( Stream $stream --> int32 )  is native('portaudio', v2) { * }
 
-        method read-available() returns Int {
+        method read-available( --> Int )  {
             my $rc = Pa_GetStreamReadAvailable(self);
             if $rc < 0 {
                 X::StreamError.new(code => $rc, what => "getting read frames").throw;
@@ -840,9 +845,9 @@ class Audio::PortAudio {
             $rc;
         }
 
-        sub Pa_GetStreamWriteAvailable( Stream $stream ) returns int32 is native('portaudio', v2) { * }
+        sub Pa_GetStreamWriteAvailable( Stream $stream --> int32 )  is native('portaudio', v2) { * }
 
-        method write-available() returns Int {
+        method write-available( --> Int )  {
             my $rc = Pa_GetStreamWriteAvailable(self);
 
             if $rc < 0 {
@@ -852,9 +857,9 @@ class Audio::PortAudio {
             $rc;
         }
 
-        sub Pa_ReadStream(Stream $stream, CArray $buffer, uint64 $frames) returns int32 is native('portaudio', v2) { * }
+        sub Pa_ReadStream(Stream $stream, CArray $buffer, uint64 $frames --> int32 )  is native('portaudio', v2) { * }
 
-        method read(Int $frames, Int $num-channels, Mu:U $type) returns CArray {
+        method read(Int $frames, Int $num-channels, Mu:U $type --> CArray )  {
             my $zero = $type ~~ Num ?? 0e0 !! 0;
             my $buff = CArray[$type].new($zero xx ($frames * $num-channels));
             my $rc = Pa_ReadStream(self, $buff, $frames);
@@ -864,21 +869,21 @@ class Audio::PortAudio {
             $buff;
         }
 
-        sub Pa_GetStreamCpuLoad(Stream $stream) returns num64 is native('portaudio', v2) { * }
+        sub Pa_GetStreamCpuLoad(Stream $stream --> num64 )  is native('portaudio', v2) { * }
 
-        method cpu-load() returns Num {
+        method cpu-load( --> Num )  {
             Pa_GetStreamCpuLoad(self);
         }
 
-        sub Pa_GetStreamTime( Stream $stream ) returns num64 is native('portaudio', v2) { * }
+        sub Pa_GetStreamTime( Stream $stream --> num64 )  is native('portaudio', v2) { * }
 
-        method time() returns Num {
+        method time( --> Num )  {
              Pa_GetStreamTime(self);
         }
 
-        sub Pa_GetStreamInfo( Stream $stream ) returns StreamInfo is native('portaudio', v2) { * }
+        sub Pa_GetStreamInfo( Stream $stream --> StreamInfo )  is native('portaudio', v2) { * }
 
-        method info() returns StreamInfo {
+        method info( --> StreamInfo )  {
             Pa_GetStreamInfo(self);
         }
 
@@ -888,24 +893,24 @@ class Audio::PortAudio {
         self.initialize();
     }
 
-    sub Pa_GetVersionText() returns Str is native('portaudio', v2) { * };
+    sub Pa_GetVersionText( --> Str )  is native('portaudio', v2) { * };
 
-    method version() returns Str {
+    method version( --> Str )  {
         Pa_GetVersionText();
     }
-    
-    sub Pa_Initialize() returns int32 is native('portaudio',v2) {...}
 
-    method initialize() returns Bool {
+    sub Pa_Initialize( --> int32 )  is native('portaudio',v2) {...}
+
+    method initialize( --> Bool )  {
         my $rc = Pa_Initialize();
         if $rc != 0 {
             X::PortAudio.new(code => $rc, what => "initialising").throw;
         }
         True;
     }
-    sub Pa_Terminate() returns int32 is native('portaudio',v2) {...}
+    sub Pa_Terminate( --> int32 )  is native('portaudio',v2) {...}
 
-    method terminate() returns Bool {
+    method terminate( --> Bool )  {
         my $rc = Pa_Terminate();
         if $rc != 0 {
             X::PortAudio.new(code => $rc, what => "terminating").throw;
@@ -913,9 +918,9 @@ class Audio::PortAudio {
         True;
     }
 
-    sub Pa_GetDeviceCount() returns int32 is native('portaudio',v2) {...}
+    sub Pa_GetDeviceCount( --> int32 )  is native('portaudio',v2) {...}
 
-    method device-count() returns Int {
+    method device-count( --> Int )  {
         my $count = Pa_GetDeviceCount();
         if $count < 0 {
             X::PortAudio.new(code => $count, what => "getting device count").throw;
@@ -923,10 +928,10 @@ class Audio::PortAudio {
         $count;
     }
 
-    
-    sub Pa_GetDeviceInfo(int32 $device-number) returns DeviceInfo is export is native('portaudio',v2) {...}
 
-    method device-info(Int $device-number) returns DeviceInfo {
+    sub Pa_GetDeviceInfo(int32 $device-number --> DeviceInfo )  is export is native('portaudio',v2) {...}
+
+    method device-info(Int $device-number --> DeviceInfo )  {
         Pa_GetDeviceInfo($device-number);
     }
 
@@ -941,13 +946,13 @@ class Audio::PortAudio {
     }
 
 
-    method error-text(Int $error-code) returns Str {
+    method error-text(Int $error-code --> Str )  {
         Pa_GetErrorText($error-code);
     }
-    
-    sub Pa_GetDefaultOutputDevice() returns int32 is native('portaudio',v2) {...}
 
-    method default-output-device() returns DeviceInfo {
+    sub Pa_GetDefaultOutputDevice( --> int32 )  is native('portaudio',v2) {...}
+
+    method default-output-device( --> DeviceInfo )  {
         my Int $device-number = Pa_GetDefaultOutputDevice();
         if $device-number < 0 {
             X::PortAudio.new(code => $device-number, what => "getting output device").throw;
@@ -955,16 +960,16 @@ class Audio::PortAudio {
         self.device-info($device-number);
     }
 
-    sub Pa_GetDefaultInputDevice() returns int32 is native('portaudio',v2) {...}
+    sub Pa_GetDefaultInputDevice( --> int32 )  is native('portaudio',v2) {...}
 
-    method default-input-device() returns DeviceInfo {
+    method default-input-device( --> DeviceInfo )  {
         my Int $device-number = Pa_GetDefaultInputDevice();
         if $device-number < 0 {
             X::PortAudio.new(code => $device-number, what => "getting input device").throw;
         }
         self.device-info($device-number);
     }
-    
+
     sub Pa_OpenDefaultStream(CArray[Stream] $stream,
                              int32 $input,
                              int32 $output,
@@ -976,12 +981,12 @@ class Audio::PortAudio {
         returns int32 is native('portaudio',v2) {...}
 
     class X::OpenError is X::PortAudio {
-        method message() returns Str  {
+        method message( --> Str )   {
             "error opening stream: '{ $.error-text }'";
         }
     }
 
-    method open-default-stream(Int $input = 0, Int $output = 2, StreamFormat $format = StreamFormat::Float32, Int $sample-rate = 44100, Int $frames-per-buffer = 256) returns Stream {
+    method open-default-stream(Int $input = 0, Int $output = 2, StreamFormat $format = StreamFormat::Float32, Int $sample-rate = 44100, Int $frames-per-buffer = 256 --> Stream )  {
         my CArray[Stream] $stream = CArray[Stream].new;
         $stream[0] = Stream.new;
         my $rc = Pa_OpenDefaultStream($stream,$input,$output,$format.Int, Num($sample-rate), $frames-per-buffer, Code, CArray);
@@ -990,7 +995,7 @@ class Audio::PortAudio {
         }
         $stream[0];
     }
-    
+
     sub Pa_OpenStream(CArray[Stream] $stream,
                       StreamParameters $in-params,
                       StreamParameters $out-params,
@@ -1001,7 +1006,7 @@ class Audio::PortAudio {
                       CArray $user-data)
         returns int32 is native('portaudio',v2) {...}
 
-    method open-stream(StreamParameters $in-params, StreamParameters $out-params, Int $sample-rate = 44100, Int $frames-per-buffer = 256) returns Stream {
+    method open-stream(StreamParameters $in-params, StreamParameters $out-params, Int $sample-rate = 44100, Int $frames-per-buffer = 256 --> Stream )  {
         my CArray[Stream] $stream = CArray[Stream].new;
         $stream[0] = Stream.new;
         my $rc = Pa_OpenStream($stream, $in-params, $out-params, Num($sample-rate), $frames-per-buffer, 0, Code, CArray);
@@ -1010,11 +1015,11 @@ class Audio::PortAudio {
         }
         $stream[0];
     }
-    sub Pa_IsFormatSupported( StreamParameters $input, StreamParameters $output, num64 $sample-rate ) returns int32 is native('portaudio', v2) { * }
+    sub Pa_IsFormatSupported( StreamParameters $input, StreamParameters $output, num64 $sample-rate --> int32 )  is native('portaudio', v2) { * }
 
-    method is-format-supported(StreamParameters $input, StreamParameters $output, Int $sample-rate) returns Bool {
+    method is-format-supported(StreamParameters $input, StreamParameters $output, Int $sample-rate --> Bool )  {
         my $rc = Pa_IsFormatSupported($input, $output, Num($sample-rate));
         $rc == 0 ?? True !! False;
     }
 }
-# vim: expandtab shiftwidth=4 ft=perl6
+# vim: expandtab shiftwidth=4 ft=raku

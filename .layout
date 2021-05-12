@@ -1,0 +1,97 @@
+{
+  "type": "layout",
+  "children": [
+    {
+      "type": "file",
+      "name": "META6.json"
+    },
+    {
+      "type": "file",
+      "name": "Changes"
+    },
+    {
+      "children": [
+        {
+          "name": "play-sine-original",
+          "type": "file"
+        },
+        {
+          "type": "file",
+          "name": "play-sine-better"
+        },
+        {
+          "name": "record-wav",
+          "type": "file"
+        },
+        {
+          "type": "file",
+          "name": "stream-source"
+        },
+        {
+          "type": "file",
+          "name": "enum-devices"
+        },
+        {
+          "type": "file",
+          "name": "play-wav"
+        },
+        {
+          "type": "file",
+          "name": "README.md"
+        }
+      ],
+      "type": "directory",
+      "name": "examples",
+      "purpose": null
+    },
+    {
+      "name": "LICENCE",
+      "type": "file"
+    },
+    {
+      "children": [
+        {
+          "name": "010-use.t",
+          "type": "file"
+        },
+        {
+          "name": "020-basic.t",
+          "type": "file"
+        },
+        {
+          "name": "001-meta.t",
+          "type": "file"
+        }
+      ],
+      "purpose": null,
+      "type": "directory",
+      "name": "t"
+    },
+    {
+      "type": "directory",
+      "name": "lib",
+      "children": [
+        {
+          "name": "Audio",
+          "children": [
+            {
+              "type": "file",
+              "name": "PortAudio.pm"
+            }
+          ],
+          "type": "directory",
+          "purpose": null
+        }
+      ],
+      "purpose": null
+    },
+    {
+      "name": "Documentation.md",
+      "type": "file"
+    },
+    {
+      "type": "file",
+      "name": "README.md"
+    }
+  ]
+}
