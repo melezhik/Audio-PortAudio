@@ -1,3 +1,5 @@
+v0.0.5		Sun  3 Oct 17:27:49 BST 2021
+	* Switch Code type object for Pointer in NULL Callback
 v0.0.4		Wed 12 May 19:12:01 BST 2021
 	* Renaming and tidying
     * Add GH action

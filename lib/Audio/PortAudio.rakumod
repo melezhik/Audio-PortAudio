@@ -989,7 +989,7 @@ class Audio::PortAudio {
     method open-default-stream(Int $input = 0, Int $output = 2, StreamFormat $format = StreamFormat::Float32, Int $sample-rate = 44100, Int $frames-per-buffer = 256 --> Stream )  {
         my CArray[Stream] $stream = CArray[Stream].new;
         $stream[0] = Stream.new;
-        my $rc = Pa_OpenDefaultStream($stream,$input,$output,$format.Int, Num($sample-rate), $frames-per-buffer, Code, CArray);
+        my $rc = Pa_OpenDefaultStream($stream,$input,$output,$format.Int, Num($sample-rate), $frames-per-buffer, Pointer, CArray);
         if $rc != 0 {
             X::OpenError.new(code => $rc, error-text => self.error-text($rc)).throw;
         }
@@ -1009,7 +1009,7 @@ class Audio::PortAudio {
     method open-stream(StreamParameters $in-params, StreamParameters $out-params, Int $sample-rate = 44100, Int $frames-per-buffer = 256 --> Stream )  {
         my CArray[Stream] $stream = CArray[Stream].new;
         $stream[0] = Stream.new;
-        my $rc = Pa_OpenStream($stream, $in-params, $out-params, Num($sample-rate), $frames-per-buffer, 0, Code, CArray);
+        my $rc = Pa_OpenStream($stream, $in-params, $out-params, Num($sample-rate), $frames-per-buffer, 0, Pointer, CArray);
         if $rc != 0 {
             X::OpenError.new(code => $rc, error-text => self.error-text($rc)).throw;
         }

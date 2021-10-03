@@ -76,7 +76,7 @@
           "children": [
             {
               "type": "file",
-              "name": "PortAudio.pm"
+              "name": "PortAudio.rakumod"
             }
           ],
           "type": "directory",

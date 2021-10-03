@@ -23,9 +23,9 @@
     "LibraryCheck"
   ],
   "provides": {
-    "Audio::PortAudio": "lib/Audio/PortAudio.pm"
+    "Audio::PortAudio": "lib/Audio/PortAudio.rakumod"
   },
-  "version": "0.0.4",
+  "version": "0.0.5",
   "authors": [
     "Jonathan Stowe <jns+gh@gellyfish.co.uk>"
   ],
