@@ -1,3 +1,6 @@
+v0.0.7  Fri  6 Jan 13:20:50 GMT 2023
+	* Silence noisy backends on initialise (from ab5tract)
+	* Handle booleans properly (from ab5tract)
 v0.0.6	Sun  7 Aug 09:47:04 BST 2022
 	* Upload to zef repository
 v0.0.5		Sun  3 Oct 17:27:49 BST 2021

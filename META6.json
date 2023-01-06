@@ -22,7 +22,7 @@
   "support": {
     "source": "https://github.com/Raku-Noise-Gang/Audio-PortAudio.git"
   },
-  "version": "0.0.6",
+  "version": "0.0.7",
   "test-depends": [
     "LibraryCheck"
   ],
